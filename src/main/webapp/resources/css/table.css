@@ -1,0 +1,38 @@
+@charset "UTF-8";
+.tableArea{
+margin: 0 auto;
+padding-left:225px;
+padding-bottom:0;
+}
+.pagebar{
+	padding-left:465px;
+}
+table {
+  width: 700px;
+  height: 300px;
+  border-collapse: collapse;
+  
+}
+table th{
+	background-color: #7d595947;
+}
+
+table th, td {
+  width:700px;
+  font-size:15px;
+  border: 1px solid #444444;
+  padding:5px;
+}
+td input{
+  font-size:11px;
+}
+
+.newBoard{
+	padding-left:520px;
+}
+.reply{
+	text-align:left;
+}
+a{
+	text-decoration: none;	
+}
