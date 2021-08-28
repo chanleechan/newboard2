@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.lch.board.domain.BoardDomain;
 import com.lch.board.service.BoardService;
+import com.lch.board.DAO.BoardDao;
 
 @Controller
 @RequestMapping("/")
@@ -118,6 +119,8 @@ public class BoardController {
 		String pageNm = "";
 		BoardService bs = new BoardService();
 		check = bs.insertReplyBoard(req);
+		BoardDao bd = new BoardDao();
+		bd.replyUpdate(req);
 		if(check > 0) {
 			pageNm = "redirect:/boardList";
 		}

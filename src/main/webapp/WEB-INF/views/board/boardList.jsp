@@ -30,11 +30,13 @@ document.addEventListener("DOMContentLoaded".function(){
 			</td>
 			<c:choose>
 				<c:when test = "${boardList.groupLevel >0 }">
-					<td class = "title" style="padding-left: ${boardList.boardSeq * 20}px"><a href = "/board/selectBoard?boardNum=${boardList.boardNum}">ㄴRE : ${boardList.title}</a></td>
+					<td class = "title" style="padding-left: ${boardList.boardSeq * 20}px"><a href = "/board/selectBoard?boardNum=${boardList.boardNum}">ㄴRE : ${boardList.title}</a>
+					<p class = "time">${boardList.boardSeq}</p>
+					</td>
 				</c:when>
 				<c:otherwise>
 					<td class = "title"><a href = "/board/selectBoard?boardNum=${boardList.boardNum}">${boardList.title}</a>
-					<p class = "time">하하</p>
+					<p class = "time">${boardList.boardSeq}</p>
 					</td>
 				</c:otherwise>
 			</c:choose>

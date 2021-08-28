@@ -146,11 +146,16 @@ public class BoardDao {
 		int check = 0;
 		String title = "";
 		String contents = "";
+		String boardNum = "";
 		title = req.getParameter("title");
 		contents = req.getParameter("contents");
+		boardNum = req.getParameter("boardNum");
+		String insertBoard = "";
 		conn = JDBCInfo.getConnection();
-		String insertBoard = "insert into board(boardNum,title,contents,groupNum,groupLevel,boardSeq) "
-				+ "values(null, ?,?,(select max(boardNum)+1 from board as t1),0,0)";
+
+			insertBoard = "insert into board(boardNum,title,contents,groupNum,groupLevel,boardSeq) "
+					+ "values(null, ?,?,ifnull((select max(boardNum)+1 from board as t1),1),0,0);";
+
 		pstmt = conn.prepareStatement(insertBoard);
 		pstmt.setString(1, title);
 		pstmt.setString(2, contents);
@@ -306,25 +311,29 @@ public class BoardDao {
 	
 	public int insertReplyBoard(HttpServletRequest req) throws SQLException {
 //		ReplyDomain replyBoard  = new ReplyDomain();
-		
+		BoardDomain parent = new BoardDomain();
 		int check = 0;
-		int boardSeq = 0;
-		String boardNum = "";
-		String groupNum = "";
+		String boardSeq = "";
 		String title = "";
 		String contents = "";
-		String groupLevel = req.getParameter("groupLevel");
 		
-		boardSeq = Integer.parseInt(req.getParameter("boardSeq"));
+		String groupLevel =""; 
+		String boardNum = "";
+		String groupNum = "";
 		boardNum = req.getParameter("boardNum");
-		groupNum = req.getParameter("groupNum");
 		title = req.getParameter("title");
 		contents = req.getParameter("contents");
+		groupNum = req.getParameter("groupNum");
+		boardSeq = req.getParameter("boardSeq");
+		groupLevel= req.getParameter("groupLevel");
+		
+		
+		
 		String replySQL = "";
 		String updateSQL = "";
 		
 		conn = JDBCInfo.getConnection();
-		if(boardSeq == 0) {
+		if(Integer.parseInt(boardSeq) == 0) {
 			//댓글
 			replySQL = "insert into board(boardNum,title,contents,groupNum,groupLevel,boardSeq) " + 
 					"	values(null,?,?, " + 
@@ -344,6 +353,7 @@ public class BoardDao {
 			
 		}else {
 			//대댓글
+
 			replySQL =  "insert into board(boardNum,title,contents,groupNum,groupLevel,boardSeq) " + 
 					"	values(null,?,?, " + 
 					"(select b.groupNum from board b where boardNum = ?), "+
@@ -358,21 +368,39 @@ public class BoardDao {
 			pstmt.setString(5, boardNum);
 			check = pstmt.executeUpdate();
 			conn.commit();
-			
-			//updateSQL = "update board set groupLevel = groupLevel+1 where (select c.gl from (select min(b.groupLevel) as gl from board b where b.boardSeq = ?) as c) <= groupLevel";
-			
-//			pstmt = conn.prepareStatement(updateSQL);
-//			pstmt.setString(1, groupLevel);
-//			conn.commit();
-		}
-		
 
+		}
+//		replySQL = "insert into board(boardNum,title,contents,groupNum,groupLevel,boardSeq) " +
+//				" values(null,?,?,?,?,?)";
+//		pstmt = conn.prepareStatement(replySQL);
+//		pstmt.setString(1, title);
+//		pstmt.setString(2, contents);
+//		pstmt.setInt(3, Integer.parseInt(groupNum));
+//		pstmt.setInt(4,Integer.parseInt(groupLevel)+1);
+//		pstmt.setInt(5, Integer.parseInt(boardSeq)+1);
+//		conn.commit();
 
 		
 		if(check > 0) {
 			check = 1;
 		}
 		
+		return check;
+	}
+	
+	public int replyUpdate(HttpServletRequest req) throws SQLException{
+		BoardDomain parent = new BoardDomain();
+		int check = 0;
+		String groupNum = req.getParameter("groupNum");
+		String boardSeq = req.getParameter("boardSeq");
+		conn = JDBCInfo.getConnection();
+		String updateSQL = "update board set boardSeq = boardSeq + 1 where groupNum = ? and boardSeq > ?";
+		
+		pstmt= conn.prepareStatement(updateSQL);
+		pstmt.setInt(1, Integer.parseInt(groupNum));
+		pstmt.setInt(2, Integer.parseInt(boardSeq));
+		
+
 		return check;
 	}
 }
